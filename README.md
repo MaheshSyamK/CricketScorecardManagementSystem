@@ -1,5 +1,5 @@
 Cricket Scorecard Management System
-                                                                                                                                          
+                                                                                                
 Overview
 The Cricket Scorecard Management System is a C++ program designed to manage and display detailed cricket match data using OOPs and file handling. This project eliminates the need for a graphical interface, focusing on efficient storage and output through text files.
 
