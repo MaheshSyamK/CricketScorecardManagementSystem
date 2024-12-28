@@ -23,7 +23,6 @@ using namespace std;
 struct details
 {
     string bscore; // Ball score
-    string oscore; // Over score
     int NB;        // Number of No Balls
     int dot;       // Number of Dot balls
     int byes;      // Number of Byes
@@ -36,16 +35,14 @@ struct details
 };
 
 
-// Declare instances of the structure for player details
-struct details playeri1;
-struct details playeri2;
+// Declare instances of the structure for players' details of the innings
+details playeri1, playeri2;
 
 
 // Declare for storing the ball by ball score
-// Vectors to store the score of every over for Team 1
-// Vectors to store the score of every over for Team 2 
-vector<string> overs1;
-vector<string> overs2;
+// Vectors to store the score of every over for Innings 1
+// Vectors to store the score of every over for Innings 2 
+vector<string> eachBallScores_Innings1, eachBallScore_Innings2;
 
 
 // Function to clear the input buffer
@@ -100,75 +97,6 @@ class CricketPlayer
     {
         hasPlayed = played;
     }
-};
-
-
-
-// Class to represent a cricket team
-class CricketTeam
-{
-  private:
-
-    string name;
-    vector<CricketPlayer> players;
-    int choice;
-
-    //Used friend class
-    friend class CricketMatch;
-
-  public:
-
-    //Constructor was initilaised 
-    CricketTeam (const string &name) : name (name) {}
-
-    // Add player names 
-    void addPlayer (const string &playerName)
-    {
-        players.emplace_back (playerName);
-    }
-
-    // It gets string name
-    const string& getName () const
-    {
-        return name;
-    }
-
-    //Function for getting team players
-    vector<CricketPlayer>& getPlayers() 
-    {
-        return players;
-    }
-
-    // It will show the player details
-    void showDetails () const
-    {
-        cout << "Team: " << name << "\nPlayers:\n";
-        for (const auto &player : players)
-            {
-                cout << "  " << player.getName () << "\n";
-            }
-    }
-
-    // It will set player names
-    void setPlayerNames ()
-    {
-        cout << "Enter the names of the players of team " << name << "\n";
-        for (int i = 0; i < 11; i++)
-            {
-                cout << "Player " << i + 1 << ", Name - ";
-                string playerName;
-                cin >> playerName;
-                addPlayer (playerName);
-            }
-        cout << "\n";
-    }
-
-    // It will get the choice took by toss won team
-    int getChoice () const
-    {
-        return choice;
-    }
-
 };
 
 
@@ -360,6 +288,74 @@ class WicketBall : public Ball
 
 
 
+// Class to represent a cricket team
+class CricketTeam
+{
+  private:
+
+    string name;
+    vector<CricketPlayer> players;
+    int choice;
+
+    //Used friend class
+    friend class CricketMatch;
+
+  public:
+
+    //Constructor was initilaised 
+    CricketTeam (const string &name) : name (name) {}
+
+    // Add player names 
+    void addPlayer (const string &playerName)
+    {
+        players.emplace_back (playerName);
+    }
+
+    // It gets string name
+    const string& getName () const
+    {
+        return name;
+    }
+
+    //Function for getting team players
+    vector<CricketPlayer>& getPlayers() 
+    {
+        return players;
+    }
+
+    // It will show the player details
+    void showDetails () const
+    {
+        cout << "Team: " << name << "\nPlayers:\n";
+        for (const auto &player : players)
+            {
+                cout << "  " << player.getName () << "\n";
+            }
+    }
+
+    // It will set player names
+    void setPlayerNames ()
+    {
+        cout << "Enter the names of the players of team " << name << "\n";
+        for (int i = 0; i < 11; i++)
+            {
+                cout << "Player " << i + 1 << ", Name - ";
+                string playerName;
+                cin >> playerName;
+                addPlayer (playerName);
+            }
+        cout << "\n";
+    }
+
+    // It will get the choice took by toss won team
+    int getChoice () const
+    {
+        return choice;
+    }
+
+};
+
+
 
 // Class for Match Details
 class CricketMatch
@@ -423,7 +419,7 @@ class CricketMatch
     }
 
         // Function for returning of total overs
-    int getTotalOvers () const
+    int gettotalOvers () const
     {
         return totalOvers;
     }
@@ -592,7 +588,7 @@ class CricketMatch
                 outFile << "Time and Date   :" << getCurrentDateTime ();
                 outFile << "Number of Overs :" << totalOvers << "\n";
                 outFile << "Toss won by     :" << tossWinner << "\n";
-                outFile << "Chosen          :" << (choice == 1 ? "Bat" : "Bowl")<< "\n";
+                outFile << "Chosen          :" << (choice == 1 ? "Bat" : "bowl")<< "\n";
 
                 // Add space between innings
                 outFile << "\n\n";
@@ -615,7 +611,7 @@ class CricketMatch
                 outFile << "Batting @ " << innings1Team << "!\n";
 
                 // Function for displaying innings 1 over by over and ball by ball details
-                writeScoreboardToFiles (outFile, overs1);
+                writeScoreboardToFiles (outFile, eachBallScores_Innings1);
 
                 // Add space between innings
                 outFile << "\n\n";
@@ -625,7 +621,7 @@ class CricketMatch
                 outFile << "Batting @ " << innings2Team << "!\n";
 
                 // Function for displaying innings 2 over by over and ball by ball details
-                writeScoreboardToFiles (outFile, overs2);
+                writeScoreboardToFiles (outFile, eachBallScore_Innings2);
 
                 // Write scoreboard in tabular format
                 outFile<< setw (20)<< "\n\n\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tScoreboard\n\n";
@@ -879,7 +875,7 @@ void checkBatsmen (vector<CricketPlayer> &players, string &striker,string &nonSt
                 {
                     strikerVerified = true;
                     players[i].hasPlayed = true;
-                    cout << "Striker's name verified. You can proceed now for "
+                    cout << "striker's name verified. You can proceed now for "
                             "bat.\n";
                 }
             if (players[i].getName () == nonStriker && !players[i].hasPlayed)
@@ -894,7 +890,7 @@ void checkBatsmen (vector<CricketPlayer> &players, string &striker,string &nonSt
     // Check if the striker name is valid
     while (!strikerVerified)
         {
-            cout << "Striker's name is invalid or has already played. Enter a "
+            cout << "striker's name is invalid or has already played. Enter a "
                     "new name: ";
             getline (cin, striker);
             for (int i = 0; i < players.size (); ++i)
@@ -904,7 +900,7 @@ void checkBatsmen (vector<CricketPlayer> &players, string &striker,string &nonSt
                         {
                             strikerVerified = true;
                             players[i].hasPlayed = true;
-                            cout << "Striker's name verified. You can proceed "
+                            cout << "striker's name verified. You can proceed "
                                     "now for bat.\n";
                             break;
                         }
@@ -935,7 +931,7 @@ void checkBatsmen (vector<CricketPlayer> &players, string &striker,string &nonSt
 
 
 // Function to verify and set the bowler
-void checkBowler (vector<CricketPlayer> &players, string &bowler)
+void checkbowler (vector<CricketPlayer> &players, string &bowler)
 {
     //Initially declared player player was not verified 
     bool bowlerVerified = false;
@@ -948,7 +944,7 @@ void checkBowler (vector<CricketPlayer> &players, string &bowler)
                     if (players[i].getName () == bowler)
                         {
                             bowlerVerified = true;
-                            cout << "Bowler's name verified. You can proceed "
+                            cout << "bowler's name verified. You can proceed "
                                     "now for bowl.\n";
                             break;
                         }
@@ -957,7 +953,7 @@ void checkBowler (vector<CricketPlayer> &players, string &bowler)
               // If bowler name was not verified then again ...  
             if (!bowlerVerified)
                 {
-                    cout << "Bowler's name is invalid. Enter a new name: ";
+                    cout << "bowler's name is invalid. Enter a new name: ";
                     getline (cin, bowler);
                 }
         }
@@ -1119,12 +1115,12 @@ int main ()
     system ("cls");
 
     // Total number of overs in the match
-    int totalovers;
+    int totalOvers;
 
     // Names of Team 1 and Team 2
     // Names of the bowler, striker, and non-striker
     string team1Name, team2Name;
-    string Bow, Striker, Nonstriker;
+    string bow, striker, nonStriker;
 
     // Input team names
     cout << "Enter Team 1 name: ";
@@ -1150,7 +1146,7 @@ int main ()
 
     // Get total overs in the match
     // Get the toss winner
-    totalovers = match.getTotalOvers ();
+    totalOvers = match.gettotalOvers ();
     string tossWinner = match.getTossWinner ();
 
     // it clears the screen
@@ -1241,20 +1237,20 @@ int main ()
             // Input striker names and verify them
             cout << "Enter striker's name: ";
             clearInputBuffer ();
-            getline (cin, Striker);
+            getline (cin, striker);
 
             // Input non striker names and verify them
             cout << "Enter non-striker's name: ";
-            getline (cin, Nonstriker);
-            checkBatsmen (battingTeamPlayers, Striker, Nonstriker);
+            getline (cin, nonStriker);
+            checkBatsmen (battingTeamPlayers, striker, nonStriker);
 
-            for (int j = 1; j <= totalovers; j++)
+            for (int j = 1; j <= totalOvers; j++)
                 {
                     // Input bowler's name and verify it
                     clearInputBuffer ();
                     cout << "Enter bowlers name: ";
-                    getline (cin, Bow);
-                    checkBowler (bowlingTeamPlayers, Bow);
+                    getline (cin, bow);
+                    checkbowler (bowlingTeamPlayers, bow);
                     
                     // Giving the score input for overs
                     cout << "Give the score input for the over " << j << endl;
@@ -1363,8 +1359,8 @@ int main ()
                                             currentBall->handleBall (0,
                                                                      playeri1);
                                             enterNewBatsman (battingTeamPlayers,
-                                                             Striker);
-                                            cout << "New batsman: " << Striker
+                                                             striker);
+                                            cout << "New batsman: " << striker
                                                  << endl;
                                         }
 
@@ -1383,8 +1379,7 @@ int main ()
                                     // Store the score for the over
                                     // Reset bscore for the next
                                     delete currentBall;
-                                    playeri1.oscore += playeri1.bscore + " ";
-                                    overs1.push_back (playeri1.bscore);
+                                    eachBallScores_Innings1.push_back (playeri1.bscore);
                                     playeri1.bscore = "";
                                 }
 
@@ -1474,8 +1469,8 @@ int main ()
                                             currentBall->handleBall (0,
                                                                      playeri2);
                                             enterNewBatsman (battingTeamPlayers,
-                                                             Striker);
-                                            cout << "New batsman: " << Striker
+                                                             striker);
+                                            cout << "New batsman: " << striker
                                                  << endl;
                                         }
 
@@ -1494,8 +1489,7 @@ int main ()
                                     // Store the score for the over
                                     // Reset bscore for the next
                                     delete currentBall;
-                                    playeri2.oscore += playeri2.bscore + " ";
-                                    overs2.push_back (playeri2.bscore);
+                                    eachBallScore_Innings2.push_back (playeri2.bscore);
                                     playeri2.bscore = "";
                                 }
                         }
@@ -1519,7 +1513,7 @@ int main ()
             cout << "Batting  @  " << team2Name << " !!\n\n" << endl;
         }
 
-    displayScoreboard (overs1, playeri1);
+    displayScoreboard (eachBallScores_Innings1, playeri1);
     delay(8000);
 
     // Clear the console screen
@@ -1537,7 +1531,7 @@ int main ()
             cout << "Batting  @  " << team1Name << " !!\n\n" << endl;
         }
 
-    displayScoreboard (overs2, playeri2);
+    displayScoreboard (eachBallScore_Innings2, playeri2);
     delay(8000);
 
     // Clear the console screen
